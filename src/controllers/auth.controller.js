@@ -1,3 +1,4 @@
+const { registerUser } = require("../services/auth.service");
 const StatusCodes = require("../utils/StatusCodes");
 const { RegisterUserSchema } = require("../validation/authSchema");
 
@@ -13,6 +14,14 @@ const register = async (req, res) => {
   if (error) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: error.details[0].message,
+    });
+  }
+
+  const response = await registerUser(value);
+
+  if (response instanceof Error) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: response.message,
     });
   }
 
