@@ -1,0 +1,24 @@
+const StatusCodes = require("../utils/StatusCodes");
+const { RegisterUserSchema } = require("../validation/authSchema");
+
+const register = async (req, res) => {
+  if (!req.body) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Request body is missing",
+    });
+  }
+
+  const { error, value } = RegisterUserSchema.validate(req.body);
+
+  if (error) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: error.details[0].message,
+    });
+  }
+
+  return res.status(StatusCodes.OK).json({
+    message: "User Registered Successfully",
+  });
+};
+
+module.exports = register;
