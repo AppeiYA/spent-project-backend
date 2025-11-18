@@ -1,4 +1,5 @@
 const User = require("../models/UsersModel");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const registerUser = async (RegisterUserData) => {
@@ -26,4 +27,39 @@ const registerUser = async (RegisterUserData) => {
   }
 };
 
-module.exports = { registerUser };
+const loginUser = async (LoginUserData) => {
+  try {
+    // check if user exists
+    const user = await User.findOne({ email: LoginUserData?.email });
+    if (!user) {
+      return new Error("User not found");
+    }
+    // compare password
+    const isPasswordValid = await bcrypt.compare(
+      LoginUserData?.password,
+      user.hash
+    );
+    if (!isPasswordValid) {
+      return new Error("Invalid password");
+    }
+
+    // generate token
+    const token = await jwt.sign(
+      { user_id: user._id, email: user.email },
+      process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN || '1h'}
+    );
+
+    return {
+      user: {
+        email: user.email,
+        role: user.role,
+        phone_number: user.phone_number,
+      },
+      token: token,
+    };
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+module.exports = { registerUser, loginUser };
