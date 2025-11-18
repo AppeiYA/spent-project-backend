@@ -21,7 +21,9 @@ const registerUser = async (RegisterUserData) => {
       hash: passwordHash,
       role: RegisterUserData?.role || "user",
     });
-  } catch (err) {}
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 module.exports = { registerUser };

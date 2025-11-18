@@ -4,7 +4,7 @@ const StatusCodes = {
   BAD_REQUEST: 400,
   CREATED: 201,
   UNAUTHORIZED: 401,
-  INTERNAL_SERVER_ERROR: 500
+  INTERNAL_SERVER_ERROR: 500,
 };
 
 module.exports = StatusCodes;

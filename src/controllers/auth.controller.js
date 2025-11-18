@@ -16,13 +16,18 @@ const register = async (req, res) => {
       message: error.details[0].message,
     });
   }
+  try {
+    const response = await registerUser(value);
 
-  const response = await registerUser(value);
-
-  if (response instanceof Error) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: response.message,
-    });
+    if (response instanceof Error) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: response.message,
+      });
+    }
+  } catch (err) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: err.message,
+    })
   }
 
   return res.status(StatusCodes.OK).json({
