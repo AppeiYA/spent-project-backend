@@ -1,3 +1,4 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 
@@ -35,6 +36,10 @@ const UserSchema = new mongoose.Schema(
       required: false,
     },
     avatar_url: {
+      type: String,
+      required: false,
+    },
+    avatar_public_id: {
       type: String,
       required: false,
     }

@@ -1,12 +1,18 @@
 const StatusCodes = require("../utils/StatusCodes");
-const uploadAvatarService = require("../services/user.service");
+const {uploadAvatarService} = require("../services/user.service");
 
 const uploadAvatar = async (req, res) => {
-  const file = req.file.path;
+  const file = req.file;
+  if(!file){
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "No file uploaded"
+    })
+  }
+  const filePath = file.path
   const user = req.user; //from middleware
 
   try {
-    const response = await uploadAvatarService(file, user.user_id);
+    const response = await uploadAvatarService(filePath, user.user_id);
 
     return res.status(StatusCodes.OK).json({
       message: "Avatar uploaded successfully",
