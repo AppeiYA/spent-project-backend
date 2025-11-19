@@ -1,3 +1,4 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 
@@ -9,11 +10,11 @@ const UserSchema = new mongoose.Schema(
     },
     first_name: {
       type: String,
-      required: true,
+      required: false,
     },
     last_name: {
       type: String,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
@@ -30,6 +31,18 @@ const UserSchema = new mongoose.Schema(
       enum: ["admin", "editor", "researcher", "user"],
       default: "user",
     },
+    phone_number: {
+      type: String,
+      required: false,
+    },
+    avatar_url: {
+      type: String,
+      required: false,
+    },
+    avatar_public_id: {
+      type: String,
+      required: false,
+    }
   },
   { _id: false, timestamps: true }
 );
