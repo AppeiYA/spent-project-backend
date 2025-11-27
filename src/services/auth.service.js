@@ -1,6 +1,7 @@
 const User = require("../models/UsersModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const StatusCodes = require("../utils/StatusCodes");
 
 const registerUser = async (RegisterUserData) => {
   try {
@@ -34,6 +35,11 @@ const loginUser = async (LoginUserData) => {
     if (!user) {
       return new Error("User not found");
     }
+    if (["pending", "banned"].includes(user.status) && user.role != "admin") {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "User not yet approved by admin",
+      });
+    }
     // compare password
     const isPasswordValid = await bcrypt.compare(
       LoginUserData?.password,
@@ -46,7 +52,8 @@ const loginUser = async (LoginUserData) => {
     // generate token
     const token = await jwt.sign(
       { user_id: user._id, email: user.email, role: user.role },
-      process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN || '1h'}
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
     );
 
     return {
