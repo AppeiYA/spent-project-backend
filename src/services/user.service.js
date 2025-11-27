@@ -1,5 +1,6 @@
 const cloudinary = require("../config/cloudinary");
 const User = require("../models/UsersModel");
+const { UpdateUserSchema } = require("../validation/userSchema");
 const uploadAvatarService = async (file, user_id) => {
   try {
     const user = await User.findById(user_id);
@@ -25,4 +26,42 @@ const uploadAvatarService = async (file, user_id) => {
   }
 };
 
-module.exports = { uploadAvatarService };
+const getMe = async (user_id) => {
+  try {
+    const user = await User.findById(user_id).select("-hash");
+    if (!user) {
+      return new Error("User not found");
+    }
+    const { _id, avatar_public_id, __v, ...userData } = user.toObject();
+
+    return userData;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Internal server error");
+  }
+};
+
+const updateUser = async (payload, user_id) => {
+  try {
+    // check if user exists
+    const user = await User.findById(user_id);
+    if (!user) {
+      return new Error("User not found");
+    }
+
+    // update user and return updated object without sensitive fields
+    const updated = await User.findByIdAndUpdate(user_id, {
+      first_name: payload?.first_name || user.first_name,
+      last_name: payload?.last_name || user.last_name,
+      phone_number: payload?.phone_number || user.phone_number,
+    }, {new: true});
+
+    const { _id, avatar_public_id, __v, hash, ...userData } =
+      updated.toObject();
+    return userData;
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+module.exports = { uploadAvatarService, getMe, updateUser };

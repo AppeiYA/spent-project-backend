@@ -14,11 +14,7 @@ const register = async (req, res) => {
 
   const { error, value } = RegisterUserSchema.validate(req.body);
 
-  if (error) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: error.details[0].message,
-    });
-  }
+  
   try {
     const response = await registerUser(value);
 
