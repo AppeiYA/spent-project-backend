@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
+const {Schema} = mongoose
 const { v4: uuidv4 } = require("uuid");
 
-const PublicationSchema = new mongoose.Schema(
+const PublicationSchema = new Schema(
   {
     _id: {
       type: String,
@@ -15,7 +16,7 @@ const PublicationSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
       lowercase: true,
     },
@@ -45,6 +46,10 @@ const PublicationSchema = new mongoose.Schema(
     ],
     file_url: {
       type: String,
+      required: false,
+    },
+    content:{
+      type: String,
       required: true,
     },
     cover_image_url: {
@@ -52,12 +57,12 @@ const PublicationSchema = new mongoose.Schema(
     },
     authors: [
       {
-        user: { type: Schema.Types.ObjectId, ref: "User" },
+        user: { type: String, ref: "User" },
         name: { type: String },
       },
     ],
     team: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "Team",
     },
     status: {
@@ -69,13 +74,13 @@ const PublicationSchema = new mongoose.Schema(
 
     // Who actually uploaded it (The Researcher/Intern)
     submitted_by: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "User",
       required: true,
     },
 
     approved_by: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "User",
     },
 

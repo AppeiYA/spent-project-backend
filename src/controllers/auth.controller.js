@@ -53,6 +53,11 @@ const login = async (req, res) => {
     const response = await loginUser(value);
 
     if (response instanceof Error) {
+      if(response.message === "401 Unauthorized"){
+        return res.status(StatusCodes.UNAUTHORIZED).json({
+          message: "User not yet approved by admin"
+        })
+      }
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: response.message,
       });

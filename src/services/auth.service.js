@@ -36,9 +36,7 @@ const loginUser = async (LoginUserData) => {
       return new Error("User not found");
     }
     if (["pending", "banned"].includes(user.status) && user.role != "admin") {
-      return res.status(StatusCodes.UNAUTHORIZED).json({
-        message: "User not yet approved by admin",
-      });
+      return new Error("401 Unauthorized")
     }
     // compare password
     const isPasswordValid = await bcrypt.compare(
