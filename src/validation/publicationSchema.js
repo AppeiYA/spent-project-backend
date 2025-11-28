@@ -2,7 +2,7 @@ const Joi = require("joi");
 
 const createResearchSchema = Joi.object({
   title: Joi.string().trim().required(),
-  slug: Joi.string().lowercase().optional(),
+  slug: Joi.string().lowercase().required(),
 
   abstract: Joi.string().max(500).required(),
 

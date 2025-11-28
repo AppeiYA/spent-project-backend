@@ -16,8 +16,8 @@ const PublicationSchema = new Schema(
     },
     slug: {
       type: String,
-      required: false,
-      unique: false,
+      required: true,
+      unique: true,
       lowercase: true,
     },
     abstract: {
