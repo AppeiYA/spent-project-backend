@@ -3,6 +3,7 @@ const {
   uploadAvatarService,
   getMe,
   updateUser,
+  getPublications,
 } = require("../services/user.service");
 const { UpdateUserSchema } = require("../validation/userSchema");
 
@@ -79,11 +80,31 @@ const updateProfile = async (req, res) => {
       data: response,
     });
   } catch (err) {
-    console.log("Error: ", err)
+    console.log("Error: ", err);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: "failed to update user"
-    })
+      message: "failed to update user",
+    });
   }
 };
 
-module.exports = { uploadAvatar, getProfile, updateProfile };
+const GetPublications = async (_req, res) => {
+  try {
+    const response = await getPublications();
+    if (response instanceof Error) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "No publications found",
+        data: []
+      });
+    }
+    return res.status(StatusCodes.OK).json({
+      message: "Publications fetched success",
+      data: response,
+    });
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: error.message,
+    });
+  }
+};
+
+module.exports = { uploadAvatar, getProfile, updateProfile, GetPublications };

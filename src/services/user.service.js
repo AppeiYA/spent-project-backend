@@ -1,6 +1,7 @@
 const cloudinary = require("../config/cloudinary");
 const User = require("../models/UsersModel");
 const { UpdateUserSchema } = require("../validation/userSchema");
+const Publication = require("../models/PublicationModel");
 const uploadAvatarService = async (file, user_id) => {
   try {
     const user = await User.findById(user_id);
@@ -50,11 +51,15 @@ const updateUser = async (payload, user_id) => {
     }
 
     // update user and return updated object without sensitive fields
-    const updated = await User.findByIdAndUpdate(user_id, {
-      first_name: payload?.first_name || user.first_name,
-      last_name: payload?.last_name || user.last_name,
-      phone_number: payload?.phone_number || user.phone_number,
-    }, {new: true});
+    const updated = await User.findByIdAndUpdate(
+      user_id,
+      {
+        first_name: payload?.first_name || user.first_name,
+        last_name: payload?.last_name || user.last_name,
+        phone_number: payload?.phone_number || user.phone_number,
+      },
+      { new: true }
+    );
 
     const { _id, avatar_public_id, __v, hash, ...userData } =
       updated.toObject();
@@ -64,4 +69,17 @@ const updateUser = async (payload, user_id) => {
   }
 };
 
-module.exports = { uploadAvatarService, getMe, updateUser };
+const getPublications = async () => {
+  try {
+    const Publications = await Publication.find({ status: "PUBLISHED" });
+    if (Publications.length == 0) {
+      return new Error("No publications found");
+    }
+    return Publications;
+  } catch (error) {
+    console.log("Error: ", error);
+    throw new Error(error.message);
+  }
+};
+
+module.exports = { uploadAvatarService, getMe, updateUser, getPublications };

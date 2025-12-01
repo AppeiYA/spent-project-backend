@@ -5,6 +5,7 @@ const {
   uploadAvatar,
   getProfile,
   updateProfile,
+  GetPublications,
 } = require("../controllers/user.controller");
 const userRouter = express.Router();
 
@@ -19,5 +20,8 @@ userRouter.post(
 userRouter.get("/me", authMiddleware, getProfile);
 
 userRouter.put("/me", authMiddleware, updateProfile);
+
+// public route
+userRouter.get("/publications", GetPublications);
 
 module.exports = userRouter;

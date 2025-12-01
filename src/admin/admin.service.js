@@ -1,6 +1,6 @@
 const User = require("../models/UsersModel");
 const cloudinary = require("../config/cloudinary");
-const Publication = require("../models/PublicationModel")
+const Publication = require("../models/PublicationModel");
 const getUsers = async () => {
   try {
     const users = await User.find().select("-hash -__v -avatar_public_id");
@@ -45,14 +45,47 @@ const createResearchPublication = async (file, payload) => {
 
     const newPublication = await Publication.create({
       ...payload,
-      cover_image_url: fileUrl
-    })
+      cover_image_url: fileUrl,
+    });
 
     return newPublication.toObject();
   } catch (err) {
-    console.log("Error:", err)
-    return new Error(err.message)
+    console.log("Error:", err);
+    return new Error(err.message);
   }
 };
 
-module.exports = { getUsers, approveUser, createResearchPublication };
+const publishResearch = async (research_id, user_id) => {
+  try {
+    // check if research exists
+    const research = await Publication.findById(research_id);
+    if (!research) {
+      return new Error("No research found");
+    }
+    await Publication.findByIdAndUpdate(research_id, { status: "PUBLISHED" , approved_by: user_id});
+  } catch (error) {
+    console.log("Error: ", error);
+    throw new Error(error.message);
+  }
+};
+
+const getAllResearch = async () => {
+  try {
+    const researches = await Publication.find();
+    if (researches.length == 0) {
+      return new Error("No research found");
+    }
+    return researches;
+  } catch (error) {
+    console.log("Error :", error);
+    throw new Error(error.message);
+  }
+};
+
+module.exports = {
+  getUsers,
+  approveUser,
+  createResearchPublication,
+  publishResearch,
+  getAllResearch
+};
