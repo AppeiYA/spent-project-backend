@@ -8,6 +8,7 @@ const cors = require("cors");
 connectDB();
 
 const allowedOrigins = [
+  "http://localhost:3000",
   "http://localhost:5173",
   "https://my-next-ebon-eta.vercel.app",
 ];
